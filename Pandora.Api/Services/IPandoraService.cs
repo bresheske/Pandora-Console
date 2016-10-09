@@ -13,5 +13,6 @@ namespace Pandora.Api.Services
         PartnerLoginResponse PartnerLogin(PartnerLoginRequest request);
         UserLoginResponse UserLogin(UserLoginRequest request);
         StationDetailResponse GetStation(StationDetailRequest request);
+        SearchResponse Search(SearchRequest request);
     }
 }

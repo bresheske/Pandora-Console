@@ -19,6 +19,7 @@ namespace Pandora.Api.Services
         private const string USER_LOGIN_METHOD = "auth.userLogin";
         private const string CHECK_LISTENING_METHOD = "test.checkLicensing";
         private const string STATION_DETAIL_METHOD = "station.getStation";
+        private const string SEARCH_METHOD = "music.search";
 
         private readonly StructureMap.Container _container;
 
@@ -159,7 +160,7 @@ namespace Pandora.Api.Services
                 using (var client = new WebClient())
                 {
                     // Form together our request object.
-                    var url = $"{ROOT_URL_HTTP}{STATION_DETAIL_METHOD}&auth_token={Uri.EscapeDataString(request.PartnerAuthToken)}&partner_id={request.PartnerId}&user_id={request.UserId}";
+                    var url = $"{ROOT_URL_HTTP}{STATION_DETAIL_METHOD}&auth_token={Uri.EscapeDataString(request.UserAuthToken)}&partner_id={request.PartnerId}&user_id={request.UserId}";
                     var obj = new JObject();
                     obj.Add("userAuthToken", new JValue(request.UserAuthToken));
                     obj.Add("stationToken", new JValue(request.StationToken));
@@ -176,6 +177,9 @@ namespace Pandora.Api.Services
                     // Parse the results.
                     var token = JObject.Parse(json);
                     output.Successful = (string)token.SelectToken("stat") == "ok";
+                    if (!output.Successful)
+                        return output;
+
                     var thumbs = (JArray)token.SelectToken("result.feedback.thumbsUp");
                     output.Songs = new List<Song>();
                     foreach (var s in thumbs)
@@ -197,10 +201,71 @@ namespace Pandora.Api.Services
             return output;
         }
 
+        public SearchResponse Search(SearchRequest request)
+        {
+            var logger = _container.GetInstance<ILogger>();
+            var encservice = _container.GetInstance<IEncryptionService>();
+            var output = new SearchResponse();
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    // Form together our request object.
+                    var url = $"{ROOT_URL_HTTP}{SEARCH_METHOD}&auth_token={Uri.EscapeDataString(request.UserAuthToken)}&partner_id={request.PartnerId}&user_id={request.UserId}";
+                    var obj = new JObject();
+                    obj.Add("userAuthToken", new JValue(request.UserAuthToken));
+                    obj.Add("searchText", new JValue(request.SearchText));
+                    var now = GetNowSeconds();
+                    var synctime = now + request.PartnerRequestSyncTime - request.PartnerResponseSyncTime;
+                    obj.Add("syncTime", new JValue(synctime));
+                    var objstring = obj.ToString(Newtonsoft.Json.Formatting.None);
+                    var encstring = encservice.Encrypt(objstring, request.EncryptionKey);
+
+                    // POST the value off to the server.
+                    var json = client.UploadString(url, encstring);
+
+                    // Parse the results.
+                    var token = JObject.Parse(json);
+                    output.Successful = (string)token.SelectToken("stat") == "ok";
+                    if (!output.Successful)
+                        return output;
+
+                    var songs = (JArray)token.SelectToken("result.songs");
+                    output.Songs = new List<Song>();
+                    foreach (var s in songs)
+                    {
+                        output.Songs.Add(new Song()
+                        {
+                            Name = (string)s.SelectToken("songName"),
+                            Artist = (string)s.SelectToken("artistName"),
+                        });
+                    }
+
+                    var artists = (JArray)token.SelectToken("result.artists");
+                    output.Artists = new List<Artist>();
+                    foreach (var a in artists)
+                    {
+                        output.Artists.Add(new Artist()
+                        {
+                            Name = (string)a.SelectToken("artistName"),
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogMessage($"ERROR (HttpPandoraService,Search): {ex.Message}");
+                output.Successful = false;
+            }
+
+            return output;
+        }
+
         private int GetNowSeconds()
         {
             return (int)(TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
                 new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
         }
+
     }
 }

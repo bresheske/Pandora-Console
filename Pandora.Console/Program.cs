@@ -31,6 +31,7 @@ namespace Pandora.Console
             var stationname = string.Empty;
             var username = string.Empty;
             var password = string.Empty;
+            var search = string.Empty;
             var set = new OptionSet()
             {
 
@@ -39,6 +40,7 @@ namespace Pandora.Console
                 {"s=", "Station to Read", o => stationname = o },
                 {"u=", "Pandora Username (Email)", o => username = o },
                 {"p=", "Pandora Password", o => password = o },
+                {"search=", "Search for a Song or Artist", o => search = o },
             };
             set.Parse(args);
 
@@ -57,8 +59,8 @@ namespace Pandora.Console
             var service = container.GetInstance<IPandoraService>();
 
             // Check to make sure we can connect first.
-            var response = service.CheckListening();
-            if (!response.Successful)
+            var listeningresponse = service.CheckListening();
+            if (!listeningresponse.Successful)
                 return;
 
             // Partner Login to get our ApiKey.
@@ -78,7 +80,7 @@ namespace Pandora.Console
             };
 
             var partnerloginresponse = service.PartnerLogin(partnerreq);
-            if (!response.Successful)
+            if (!partnerloginresponse.Successful)
                 return;
 
             // User Login
@@ -93,13 +95,38 @@ namespace Pandora.Console
             };
 
             var userloginresponse = service.UserLogin(userreq);
-            if (!response.Successful)
+            if (!userloginresponse.Successful)
                 return;
 
             // Finally, process requests.
 
+            // If we just want to look for music
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var searchrequest = new SearchRequest()
+                {
+                    DecryptionKey = decryptionkey,
+                    EncryptionKey = encryptionkey,
+                    PartnerAuthToken = partnerloginresponse.PartnerAuthToken,
+                    PartnerId = partnerloginresponse.PartnerId,
+                    UserAuthToken = userloginresponse.UserAuthToken,
+                    UserId = userloginresponse.UserId,
+                    PartnerRequestSyncTime = partnerloginresponse.RequestSyncTime,
+                    PartnerResponseSyncTime = partnerloginresponse.ResponseSyncTime,
+                    SearchText = search
+                };
+                var searchresult = service.Search(searchrequest);
+                foreach (var s in searchresult.Songs)
+                {
+                    logger.LogMessage($"Song:{s.Artist}:{s.Name}");
+                }
+                foreach (var a in searchresult.Artists)
+                {
+                    logger.LogMessage($"Artist:{a.Name}");
+                }
+            }
             // If we have list, and we specified a station name.
-            if (!string.IsNullOrWhiteSpace(stationname) && list)
+            else if (!string.IsNullOrWhiteSpace(stationname) && list)
             {
                 var station = userloginresponse.Stations
                     .FirstOrDefault(x => x.Name.ToLower() == stationname.ToLower());

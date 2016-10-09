@@ -49,11 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dtos\Artist.cs" />
     <Compile Include="Dtos\BaseRequestDto.cs" />
     <Compile Include="Dtos\BaseResponseDto.cs" />
     <Compile Include="Dtos\ListeningResponse.cs" />
     <Compile Include="Dtos\PartnerLoginRequest.cs" />
     <Compile Include="Dtos\PartnerLoginResponse.cs" />
+    <Compile Include="Dtos\SearchRequest.cs" />
+    <Compile Include="Dtos\SearchResponse.cs" />
     <Compile Include="Dtos\Song.cs" />
     <Compile Include="Dtos\Station.cs" />
     <Compile Include="Dtos\StationDetailRequest.cs" />
