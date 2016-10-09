@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandora.Console", "Pandora.Console\Pandora.Console.csproj", "{D649136E-5DDC-4BEB-9954-4DF05B114DA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandora.Common", "Pandora.Common\Pandora.Common.csproj", "{19A5860C-3DC2-4830-AA30-334F0C623EDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandora.Api", "Pandora.Api\Pandora.Api.csproj", "{C4BCE791-D93A-4F31-97C5-5C787538756A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandora.Test", "Pandora.Test\Pandora.Test.csproj", "{73C21015-B2A0-4D81-8E34-88BB55380C37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D649136E-5DDC-4BEB-9954-4DF05B114DA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D649136E-5DDC-4BEB-9954-4DF05B114DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D649136E-5DDC-4BEB-9954-4DF05B114DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D649136E-5DDC-4BEB-9954-4DF05B114DA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19A5860C-3DC2-4830-AA30-334F0C623EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19A5860C-3DC2-4830-AA30-334F0C623EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19A5860C-3DC2-4830-AA30-334F0C623EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19A5860C-3DC2-4830-AA30-334F0C623EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4BCE791-D93A-4F31-97C5-5C787538756A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4BCE791-D93A-4F31-97C5-5C787538756A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4BCE791-D93A-4F31-97C5-5C787538756A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4BCE791-D93A-4F31-97C5-5C787538756A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
