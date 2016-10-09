@@ -34,7 +34,7 @@ namespace Pandora.Console
             var set = new OptionSet()
             {
 
-                {"list", "List Pandora Stations", o => list = true},
+                {"l", "List Pandora Stations", o => list = true},
                 {"h", "Help", o => help = true},
                 {"s=", "Station to Read", o => stationname = o },
                 {"u=", "Pandora Username (Email)", o => username = o },
@@ -93,6 +93,8 @@ namespace Pandora.Console
             };
 
             var userloginresponse = service.UserLogin(userreq);
+            if (!response.Successful)
+                return;
 
             // Finally, process requests.
 

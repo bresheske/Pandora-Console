@@ -34,11 +34,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
+      <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="StructureMap, Version=4.4.1.451, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\StructureMap.4.4.1\lib\net45\StructureMap.dll</HintPath>
+      <HintPath>..\packages\StructureMap.4.4.1\lib\net45\StructureMap.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,7 +63,7 @@
       <Project>{19a5860c-3dc2-4830-aa30-334f0c623ede}</Project>
       <Name>Pandora.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="Pandora.Api\Pandora.Api.csproj">
+    <ProjectReference Include="..\Pandora.Api\Pandora.Api.csproj">
       <Project>{c4bce791-d93a-4f31-97c5-5c787538756a}</Project>
       <Name>Pandora.Api</Name>
     </ProjectReference>

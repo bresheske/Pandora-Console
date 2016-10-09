@@ -74,7 +74,7 @@ namespace Pandora.Api.Services
                     var objstring = obj.ToString(Newtonsoft.Json.Formatting.None);
 
                     // POST the value off to the server.
-                    output.RequestSyncTime = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+                    output.RequestSyncTime = GetNowSeconds();
                     var json = client.UploadString(url, objstring);
 
                     // Parse the results.
@@ -84,7 +84,7 @@ namespace Pandora.Api.Services
                     output.PartnerId = (string)token.SelectToken("result.partnerId");
                     var time = (string)token.SelectToken("result.syncTime");
                     var dectime = enc.Decrypt(time, request.DecryptionKey);
-                    output.ResponseSyncTime = long.Parse(Regex.Match(dectime.Substring(4), "^[0-9]*").Groups[0].Value);
+                    output.ResponseSyncTime = int.Parse(Regex.Match(dectime.Substring(4), "^[0-9]*").Groups[0].Value);
                 }
             }
             catch(Exception ex)
@@ -113,7 +113,7 @@ namespace Pandora.Api.Services
                     obj.Add("password", new JValue(request.Password));
                     obj.Add("partnerAuthToken", new JValue(request.PartnerAuthToken));
                     obj.Add("returnStationList", new JValue(true));
-                    var now = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+                    var now = GetNowSeconds();
                     var synctime = now + request.PartnerRequestSyncTime - request.PartnerResponseSyncTime;
                     obj.Add("syncTime", new JValue(synctime));
                     var objstring = obj.ToString(Newtonsoft.Json.Formatting.None);
@@ -164,7 +164,7 @@ namespace Pandora.Api.Services
                     obj.Add("userAuthToken", new JValue(request.UserAuthToken));
                     obj.Add("stationToken", new JValue(request.StationToken));
                     obj.Add("includeExtendedAttributes", new JValue(true));
-                    var now = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+                    var now = GetNowSeconds();
                     var synctime = now + request.PartnerRequestSyncTime - request.PartnerResponseSyncTime;
                     obj.Add("syncTime", new JValue(synctime));
                     var objstring = obj.ToString(Newtonsoft.Json.Formatting.None);
@@ -190,11 +190,17 @@ namespace Pandora.Api.Services
             }
             catch (Exception ex)
             {
-                logger.LogMessage($"ERROR (HttpPandoraService,UserLogin): {ex.Message}");
+                logger.LogMessage($"ERROR (HttpPandoraService,GetStation): {ex.Message}");
                 output.Successful = false;
             }
 
             return output;
+        }
+
+        private int GetNowSeconds()
+        {
+            return (int)(TimeZoneInfo.ConvertTimeToUtc(DateTime.UtcNow) -
+                new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
         }
     }
 }

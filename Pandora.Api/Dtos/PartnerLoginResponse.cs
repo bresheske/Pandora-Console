@@ -10,7 +10,7 @@ namespace Pandora.Api.Dtos
     {
         public string PartnerAuthToken { get; set; }
         public string PartnerId { get; set; }
-        public double RequestSyncTime { get; internal set; }
-        public double ResponseSyncTime { get; set; }
+        public int RequestSyncTime { get; internal set; }
+        public int ResponseSyncTime { get; set; }
     }
 }
