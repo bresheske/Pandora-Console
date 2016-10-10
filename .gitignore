@@ -4,3 +4,4 @@ obj/
 [Rr]elease*/
 [Pp]ackages*/
 *.csproj.user
+*.suo
