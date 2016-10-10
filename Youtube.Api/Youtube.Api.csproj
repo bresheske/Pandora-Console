@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D649136E-5DDC-4BEB-9954-4DF05B114DA4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{1E8A1BD8-6C93-4668-921C-5C1612C796D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pandora.Console</RootNamespace>
-    <AssemblyName>Pandora.Console</AssemblyName>
+    <RootNamespace>Youtube.Api</RootNamespace>
+    <AssemblyName>Youtube.Api</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,14 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StructureMap, Version=4.4.1.451, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StructureMap.4.4.1\lib\net45\StructureMap.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,25 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Dtos\BaseResponseDto.cs" />
+    <Compile Include="Dtos\SearchRequest.cs" />
+    <Compile Include="Dtos\SearchResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <Compile Include="Services\HttpsYoutubeService.cs" />
+    <Compile Include="Services\IYoutubeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pandora.Common\Pandora.Common.csproj">
       <Project>{19a5860c-3dc2-4830-aa30-334f0c623ede}</Project>
       <Name>Pandora.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Pandora.Api\Pandora.Api.csproj">
-      <Project>{c4bce791-d93a-4f31-97c5-5c787538756a}</Project>
-      <Name>Pandora.Api</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Youtube.Api\Youtube.Api.csproj">
-      <Project>{1e8a1bd8-6c93-4668-921c-5c1612c796d6}</Project>
-      <Name>Youtube.Api</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

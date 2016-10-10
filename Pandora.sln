@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandora.Api", "Pandora.Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pandora.Test", "Pandora.Test\Pandora.Test.csproj", "{73C21015-B2A0-4D81-8E34-88BB55380C37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Youtube.Api", "Youtube.Api\Youtube.Api.csproj", "{1E8A1BD8-6C93-4668-921C-5C1612C796D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73C21015-B2A0-4D81-8E34-88BB55380C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E8A1BD8-6C93-4668-921C-5C1612C796D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E8A1BD8-6C93-4668-921C-5C1612C796D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E8A1BD8-6C93-4668-921C-5C1612C796D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E8A1BD8-6C93-4668-921C-5C1612C796D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Youtube.Api.Services;
 
 namespace Pandora.Console
 {
@@ -21,6 +22,7 @@ namespace Pandora.Console
                 x.For<ILogger>().Use<ConsoleLogger>();
                 x.For<IPandoraService>().Use<HttpsPandoraService>();
                 x.For<IEncryptionService>().Use<BlowfishEncryptionService>();
+                x.For<IYoutubeService>().Use<HttpsYoutubeService>();
             });
             var container = Pandora.Common.IOC.Container.Instance;
             var logger = container.GetInstance<ILogger>();
@@ -32,6 +34,7 @@ namespace Pandora.Console
             var username = string.Empty;
             var password = string.Empty;
             var search = string.Empty;
+            var download = false;
             var set = new OptionSet()
             {
 
@@ -41,6 +44,7 @@ namespace Pandora.Console
                 {"u=", "Pandora Username (Email)", o => username = o },
                 {"p=", "Pandora Password", o => password = o },
                 {"search=", "Search for a Song or Artist", o => search = o },
+                {"dl", "Download Results from Youtube. Reqires youtube-dl and FFMpeg in the PATH variable.", o => download = true },
             };
             set.Parse(args);
 
@@ -56,10 +60,11 @@ namespace Pandora.Console
                 return;
             }
             
-            var service = container.GetInstance<IPandoraService>();
+            var pandoraservice = container.GetInstance<IPandoraService>();
+            var youtubeservice = container.GetInstance<IYoutubeService>();
 
             // Check to make sure we can connect first.
-            var listeningresponse = service.CheckListening();
+            var listeningresponse = pandoraservice.CheckListening();
             if (!listeningresponse.Successful)
                 return;
 
@@ -79,7 +84,7 @@ namespace Pandora.Console
                 EncryptionKey = encryptionkey
             };
 
-            var partnerloginresponse = service.PartnerLogin(partnerreq);
+            var partnerloginresponse = pandoraservice.PartnerLogin(partnerreq);
             if (!partnerloginresponse.Successful)
                 return;
 
@@ -94,14 +99,64 @@ namespace Pandora.Console
                 Password = password,
             };
 
-            var userloginresponse = service.UserLogin(userreq);
+            var userloginresponse = pandoraservice.UserLogin(userreq);
             if (!userloginresponse.Successful)
                 return;
 
             // Finally, process requests.
 
+            // if we want to download results from youtube.
+            if (download)
+            {
+                // validate our input first.
+                if (string.IsNullOrWhiteSpace(stationname))
+                {
+                    logger.LogMessage("Download requires a station name.");
+                    return;
+                }
+
+                var station = userloginresponse.Stations
+                    .FirstOrDefault(x => x.Name.ToLower() == stationname.ToLower());
+                if (station == null)
+                {
+                    logger.LogMessage($"Error: Cannot find station '{stationname}'.");
+                    return;
+                }
+
+                // Get the details of the station.
+                var stationrequest = new StationDetailRequest()
+                {
+                    DecryptionKey = decryptionkey,
+                    EncryptionKey = encryptionkey,
+                    PartnerAuthToken = partnerloginresponse.PartnerAuthToken,
+                    PartnerId = partnerloginresponse.PartnerId,
+                    PartnerRequestSyncTime = partnerloginresponse.RequestSyncTime,
+                    PartnerResponseSyncTime = partnerloginresponse.ResponseSyncTime,
+                    StationToken = station.Token,
+                    UserId = userloginresponse.UserId,
+                    UserAuthToken = userloginresponse.UserAuthToken
+                };
+
+                var stationresult = pandoraservice.GetStation(stationrequest);
+
+                foreach (var s in stationresult.Songs)
+                {
+                    var youtubereq = new Youtube.Api.Dtos.SearchRequest()
+                    {
+                        SearchText = $"{s.Artist} {s.Name}"
+                    };
+                    var youtuberes = youtubeservice.Search(youtubereq);
+                    // Trusting the first result for now.
+                    var vid = youtuberes.SearchResults.FirstOrDefault();
+                    if (vid != null)
+                    {
+                        youtubeservice.Download(vid);
+                    }
+                }
+
+            }
             // If we just want to look for music
-            if (!string.IsNullOrWhiteSpace(search))
+            else if (!string.IsNullOrWhiteSpace(search))
             {
                 var searchrequest = new SearchRequest()
                 {
@@ -115,7 +170,7 @@ namespace Pandora.Console
                     PartnerResponseSyncTime = partnerloginresponse.ResponseSyncTime,
                     SearchText = search
                 };
-                var searchresult = service.Search(searchrequest);
+                var searchresult = pandoraservice.Search(searchrequest);
                 foreach (var s in searchresult.Songs)
                 {
                     logger.LogMessage($"Song:{s.Artist}:{s.Name}");
@@ -150,7 +205,7 @@ namespace Pandora.Console
                     UserAuthToken = userloginresponse.UserAuthToken
                 };
 
-                var stationresponse = service.GetStation(stationrequest);
+                var stationresponse = pandoraservice.GetStation(stationrequest);
                 foreach (var s in stationresponse.Songs)
                 {
                     logger.LogMessage($"{s.Artist}:{s.Name}");
